@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Editor Gymcana</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        #map {
+            height: 70vh;
+        }
+
+        #panel {
+            padding: 10px;
+            background: #222;
+            color: white;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+        }
+
+        button {
+            margin-top: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        #mensaje {
+            margin-top: 10px;
+            color: #4CAF50;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div id="panel">
+        <p>📍 Haz click en el mapa para crear punto</p>
+
+        <input id="codigo" placeholder="Código">
+        <input id="titulo" placeholder="Título">
+        <textarea id="narrativa" placeholder="Narrativa"></textarea>
+
+        <label>
+            <input type="checkbox" id="inicio"> Punto inicial
+        </label>
+
+        <button onclick="guardarPunto()">Guardar punto</button>
+        <button onclick="descargarJSON()">Descargar JSON</button>
+
+        <div id="mensaje"></div>
+    </div>
+
+    <script>
+        var map = L.map('map').setView([40.4168, -3.7038], 13);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
+
+        var puntos = [];
+        var tempCoords = null;
+
+        map.on('click', function(e) {
+        tempCoords = [e.latlng.lat, e.latlng.lng];
+        L.marker(tempCoords).addTo(map);
+        });
+
+        function mostrarMensaje(texto) {
+        var m = document.getElementById("mensaje");
+        m.innerHTML = texto;
+        m.style.opacity = 1;
+
+        setTimeout(() => {
+        m.style.opacity = 0;
+        }, 2000);
+        }
+
+        function guardarPunto() {
+        if (!tempCoords) {
+        mostrarMensaje("❌ Haz click en el mapa primero");
+        return;
+        }
+
+        var punto = {
+        coords: tempCoords,
+        codigo: document.getElementById("codigo").value.toUpperCase(),
+        titulo: document.getElementById("titulo").value,
+        narrativa: document.getElementById("narrativa").value,
+        inicio: document.getElementById("inicio").checked
+        };
+
+        puntos.push(punto);
+
+        mostrarMensaje("✅ Punto guardado");
+
+        document.getElementById("codigo").value = "";
+        document.getElementById("titulo").value = "";
+        document.getElementById("narrativa").value = "";
+        document.getElementById("inicio").checked = false;
+        }
+
+        function descargarJSON() {
+        var dataStr = JSON.stringify(puntos, null, 2);
+        var blob = new Blob([dataStr], { type: "application/json" });
+
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "puntos.json";
+        a.click();
+
+        mostrarMensaje("📥 JSON descargado");
+        }
+    </script>
+
+</body>
+</html>

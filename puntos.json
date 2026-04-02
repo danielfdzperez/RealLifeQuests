@@ -1,0 +1,32 @@
+[
+  {
+    "coords": [
+      40.421141742993186,
+      -3.680478930473328
+    ],
+    "codigo": "",
+    "titulo": "montany",
+    "narrativa": "empiezas",
+    "inicio": true
+  },
+  {
+    "coords": [
+      40.41958966074793,
+      -3.682077527046204
+    ],
+    "codigo": "CUBA",
+    "titulo": "cuba",
+    "narrativa": "cubisima",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.419311915937335,
+      -3.681578636169434
+    ],
+    "codigo": "GENERAL",
+    "titulo": "general",
+    "narrativa": "generalisimo",
+    "inicio": false
+  }
+]
