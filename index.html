@@ -67,6 +67,11 @@
         var puntos = [];
         var desbloqueados = {};
 
+        // Inicializar mapa
+        var map = L.map('map').setView([40.4168, -3.7038], 13);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
+
         // Cargar puntos desde JSON automáticamente
         fetch("puntos.json")
         .then(res => res.json())
@@ -91,18 +96,14 @@
         function desbloquearPunto(p, guardar = true) {
         if (desbloqueados[p.codigo]) return;
 
-        var marker = L.marker(p.coords).addTo(map);
-        marker.bindPopup(
-        "<h3>" + p.titulo + "</h3>" +
-        "<p>" + p.narrativa + "</p>"
-        );
+        var marker = L.marker(p.coords).addTo(map); // ahora map SI existe
+        marker.bindPopup("<h3>" + p.titulo + "</h3><p>" + p.narrativa + "</p>");
 
         // Animación al nuevo punto
         map.flyTo(p.coords, 15, { duration: 1.5 });
 
         desbloqueados[p.codigo] = true;
 
-        // Guardar en localStorage
         if (guardar) {
         localStorage.setItem("gymcana_desbloqueados", JSON.stringify(desbloqueados));
         }
