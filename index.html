@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <title>Gymcana</title>
     <meta charset="utf-8" />
@@ -45,15 +46,25 @@
             color: white;
         }
 
-        #mensaje {
-            margin-top: 10px;
-            font-weight: bold;
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
         }
     </style>
 </head>
+
 <body>
 
     <div id="map"></div>
+
+    <div id="loading">Cargando mapa...</div>
 
     <div id="panel">
         <p>🔐 Introduce el código:</p>
@@ -64,75 +75,101 @@
     </div>
 
     <script>
+
         var puntos = [];
         var desbloqueados = {};
+        var markers = [];
 
         // Inicializar mapa
-        var map = L.map('map').setView([40.4168, -3.7038], 13);
+        var map = L.map('map').setView([40.4168, -3.7038], 20);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
+        var tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // Cargar puntos desde JSON automáticamente
-        fetch("puntos.json")
-        .then(res => res.json())
-        .then(data => {
-        puntos = data;
+        function onTileLoad() {
+            document.getElementById('loading').style.display = 'none';
+            fetch("puntos.json")
+                .then(res => res.json())
+                .then(data => {
+                    puntos = data;
 
-        // Leer progreso guardado en localStorage
-        var saved = localStorage.getItem("gymcana_desbloqueados");
-        if (saved) {
-        desbloqueados = JSON.parse(saved);
+                    // Leer progreso guardado en localStorage
+                    var saved = localStorage.getItem("gymcana_desbloqueados");
+                    if (saved) {
+                        desbloqueados = JSON.parse(saved);
+                    }
+
+                    // Desbloquear puntos iniciales y guardados
+                    puntos.forEach(p => {
+                        if (p.inicio || desbloqueados[p.codigo]) {
+                            desbloquearPunto(p, false);
+                        }
+                    });
+                });
+            tileLayer.off('load', onTileLoad);
         }
 
-        // Desbloquear puntos iniciales y guardados
-        puntos.forEach(p => {
-        if (p.inicio || desbloqueados[p.codigo]) {
-        desbloquearPunto(p, false); // false = no guardar otra vez
-        }
+        tileLayer.on('load', onTileLoad);
+
+        map.on('moveend', function() {
+            var bounds = map.getBounds();
+            markers.forEach(function(marker) {
+                if (bounds.contains(marker.getLatLng())) {
+                    marker.openTooltip(null, { permanent: true });
+                } else {
+                    marker.closeTooltip();
+                }
+            });
         });
-        });
+
+
 
         // Función para desbloquear un punto
         function desbloquearPunto(p, guardar = true) {
-        if (desbloqueados[p.codigo]) return;
+            if (desbloqueados[p.codigo] && guardar) return;
 
-        var marker = L.marker(p.coords).addTo(map); // ahora map SI existe
-        marker.bindPopup("<h3>" + p.titulo + "</h3><p>" + p.narrativa + "</p>");
+            var marker = L.marker(p.coords).addTo(map); // ahora map SI existe
+            marker.bindPopup("<h3>" + p.titulo + "</h3><p>" + p.narrativa + "</p>");
+            marker.bindTooltip(p.titulo);
+            markers.push(marker);
 
-        // Animación al nuevo punto
-        map.flyTo(p.coords, 15, { duration: 1.5 });
+            // Animación al nuevo punto
+            if(!guardar) {
+                map.setView(p.coords,17, { animate: false });
+            } else {
+                map.flyTo(p.coords, 17, { duration: 1.5 });
+            }
+            desbloqueados[p.codigo] = true;
 
-        desbloqueados[p.codigo] = true;
-
-        if (guardar) {
-        localStorage.setItem("gymcana_desbloqueados", JSON.stringify(desbloqueados));
-        }
+            if (guardar) {
+                localStorage.setItem("gymcana_desbloqueados", JSON.stringify(desbloqueados));
+            }
         }
 
         // Comprobar código ingresado
         function comprobarCodigo() {
-        var input = document.getElementById("codigo").value.toUpperCase();
-        var mensaje = document.getElementById("mensaje");
+            var input = document.getElementById("codigo").value.toUpperCase();
+            var mensaje = document.getElementById("mensaje");
 
-        var encontrado = puntos.find(p => p.codigo === input);
+            var encontrado = puntos.find(p => p.codigo === input);
 
-        if (encontrado) {
-        if (desbloqueados[input]) {
-        mensaje.innerHTML = "⚠️ Ya desbloqueado";
-        } else {
-        desbloquearPunto(encontrado);
-        mensaje.innerHTML = "✅ Punto desbloqueado";
-        }
-        document.getElementById("codigo").value = "";
-        } else {
-        mensaje.innerHTML = "❌ Código incorrecto";
-        }
+            if (encontrado) {
+                if (desbloqueados[input]) {
+                    mensaje.innerHTML = "⚠️ Ya desbloqueado";
+                } else {
+                    desbloquearPunto(encontrado);
+                    mensaje.innerHTML = "✅ Punto desbloqueado";
+                }
+                document.getElementById("codigo").value = "";
+            } else {
+                mensaje.innerHTML = "❌ Código incorrecto";
+            }
 
-        if (Object.keys(desbloqueados).length === puntos.length) {
-        mensaje.innerHTML = "🏆 ¡Gymcana completada!";
-        }
+            if (Object.keys(desbloqueados).length === puntos.length) {
+                mensaje.innerHTML = "🏆 ¡Gymcana completada!";
+            }
         }
     </script>
 
 </body>
+
 </html>

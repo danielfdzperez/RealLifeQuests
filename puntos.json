@@ -1,32 +1,112 @@
 [
   {
     "coords": [
-      40.421141742993186,
-      -3.680478930473328
+      40.42073713664268,
+      -3.6811763048171997
     ],
     "codigo": "",
-    "titulo": "montany",
-    "narrativa": "empiezas",
+    "titulo": "Inicio",
+    "narrativa": "Vuestra aventura comienza aquí.",
     "inicio": true
   },
   {
     "coords": [
-      40.41958966074793,
-      -3.682077527046204
+      40.42108839450494,
+      -3.6805164813995366
     ],
-    "codigo": "CUBA",
-    "titulo": "cuba",
-    "narrativa": "cubisima",
+    "codigo": "MONTAÑA",
+    "titulo": "El faro",
+    "narrativa": "Desde este punto se puede ver todo, y os llama la atención la estatua dedicada a Cuba y la del General.",
     "inicio": false
   },
   {
     "coords": [
-      40.419311915937335,
-      -3.681578636169434
+      40.41934434032109,
+      -3.681546449661255
+    ],
+    "codigo": "CUBA",
+    "titulo": "Estatua de cuba",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.41782080868436,
+      -3.6809617280960087
     ],
     "codigo": "GENERAL",
-    "titulo": "general",
-    "narrativa": "generalisimo",
+    "titulo": "Estatua del general",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.41558650552388,
+      -3.687951564788819
+    ],
+    "codigo": "ARBOL",
+    "titulo": "Anciano sabio",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.41159598616271,
+      -3.6872380971908574
+    ],
+    "codigo": "PATO",
+    "titulo": "Patos",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.41103638111941,
+      -3.682533502578736
+    ],
+    "codigo": "ANGEL",
+    "titulo": "Angel caido",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.41105680608292,
+      -3.6804199218750004
+    ],
+    "codigo": "ROSALEDA",
+    "titulo": "Rosaleda",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.4132136473379,
+      -3.6779952049255376
+    ],
+    "codigo": "PAVOS",
+    "titulo": "Pavo presidente",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.41641588018904,
+      -3.679282665252686
+    ],
+    "codigo": "ZOO",
+    "titulo": "Duende",
+    "narrativa": "",
+    "inicio": false
+  },
+  {
+    "coords": [
+      40.413577091576876,
+      -3.6820399761199956
+    ],
+    "codigo": "PALACIO",
+    "titulo": "Palacio de cristal",
+    "narrativa": "",
     "inicio": false
   }
 ]
